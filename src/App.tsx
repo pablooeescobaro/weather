@@ -1,28 +1,30 @@
 import axios from "axios";
-import React, { useState } from "react";
-import Card from "./components/card";
-import Input from "./components/input";
-import Button from "./components/button";
+import React, { useState, KeyboardEvent } from "react";
+import { Button, Card, Input } from "./components";
 
 function App() {
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState(String);
   const [data, setData] = useState(null);
   const [requestString, setRequestString] = useState("");
 
   const API_KEY = "f956613a8a36ce0998c1f91779bd61b3";
   let url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${API_KEY}`;
 
-  const searchLocation = (event) => {
+  const searchLocation = (event: KeyboardEvent) => {
     if (event.key === "Enter") {
-      search();
+      search(location);
     }
   };
 
-  const search = (loc) => {
+  const search = (loc: string) => {
     if (loc !== "") {
       axios
         .get(url)
-        .then((resp) => setData(resp.data))
+        .then((resp) => {
+          console.log(resp.data);
+          setRequestString(location);
+          setData(resp.data);
+        })
         .catch((error) => {
           setData(null);
           setRequestString(location);
@@ -36,13 +38,15 @@ function App() {
         <div className="app_search-bar">
           <Input
             value={location}
-            onChange={(event) => setLocation(event)}
+            onChange={(string: string) => setLocation(string)}
             onKeyPress={searchLocation}
             className="app_input"
           ></Input>
-          <Button text="Search" onClick={() => search(location)}></Button>
+          <Button onClick={() => search(location ?? "")}>Search</Button>
         </div>
-        <Card data={data} request={location} requestString={requestString}></Card>
+        {requestString.length && (
+          <Card data={data} requestString={requestString} />
+        )}
       </div>
     </div>
   );
