@@ -3,7 +3,7 @@ import React, { useState, KeyboardEvent } from "react";
 import { Button, Card, Input } from "./components";
 
 function App() {
-  const [location, setLocation] = useState(String);
+  const [location, setLocation] = useState<string>('');
   const [data, setData] = useState(null);
   const [requestString, setRequestString] = useState("");
 
